@@ -3,37 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Aestheticraft - Beautiful Voxel World</title>
+<title>Aestheticraft V2 - Fixed</title>
 <style>
-  body { margin:0; overflow:hidden; background:#87CEEB; font-family:sans-serif; touch-action:none; }
-  #crosshair { position:fixed; left:50%; top:50%; width:20px; height:20px; transform:translate(-50%,-50%); pointer-events:none; }
-  #crosshair:before, #crosshair:after { content:''; position:absolute; background:white; }
-  #crosshair:before { left:9px; top:0; width:2px; height:20px; } #crosshair:after { left:0; top:9px; width:20px; height:2px; }
-  #hud { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); display:flex; gap:8px; background:rgba(0,0,0,0.4); padding:8px; border-radius:16px; backdrop-filter:blur(10px); }
- .slot { width:48px; height:48px; border-radius:10px; border:2px solid rgba(255,255,255,0.3); display:flex; align-items:center; justify-content:center; font-size:10px; color:white; font-weight:bold; cursor:pointer; }
- .slot.active { border-color:white; background:rgba(255,255,255,0.3); transform:scale(1.1); }
-  #controls { position:fixed; bottom:100px; left:20px; right:20px; display:flex; justify-content:space-between; pointer-events:none; }
- .joystick { width:110px; height:110px; background:rgba(255,255,255,0.15); border-radius:50%; position:relative; pointer-events:auto; }
- .knob { width:50px; height:50px; background:white; border-radius:50%; position:absolute; left:30px; top:30px; }
-  #lookArea { position:fixed; top:0; right:0; width:50%; height:70%; pointer-events:auto; }
-  #actions { position:fixed; bottom:100px; right:20px; display:flex; flex-direction:column; gap:12px; pointer-events:auto; }
- .btn { width:60px; height:60px; background:rgba(255,255,255,0.9); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:0 4px 10px rgba(0,0,0,0.2); }
-  #title { position:fixed; top:20px; left:50%; transform:translateX(-50%); color:white; text-shadow:0 2px 10px rgba(0,0,0,0.3); font-weight:800; letter-spacing:2px; }
+  body{margin:0;overflow:hidden;background:#CCE8FF;font-family:system-ui;touch-action:none}
+  #crosshair{position:fixed;left:50%;top:50%;width:20px;height:20px;transform:translate(-50%,-50%);pointer-events:none}
+  #crosshair:before,#crosshair:after{content:'';position:absolute;background:white;box-shadow:0 0 4px black}
+  #crosshair:before{left:9px;top:0;width:2px;height:20px} #crosshair:after{left:0;top:9px;width:20px;height:2px}
+  #topBar{position:fixed;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;gap:8px;z-index:10}
+ .pill{background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);color:white;padding:8px 14px;border-radius:20px;font-size:13px;font-weight:700;border:none}
+  #hud{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:6px;background:rgba(0,0,0,0.45);padding:8px;border-radius:16px;backdrop-filter:blur(10px);z-index:10}
+ .slot{width:44px;height:44px;border-radius:10px;border:2px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-size:8px;color:white;font-weight:bold;text-align:center}
+ .slot.active{border-color:#fff;background:rgba(255,255,255,0.35);transform:scale(1.1)}
+ .joystick{width:110px;height:110px;background:rgba(0,0,0,0.2);border-radius:50%;position:fixed;bottom:90px;left:18px;z-index:10}
+ .knob{width:50px;height:50px;background:white;border-radius:50%;position:absolute;left:30px;top:30px;box-shadow:0 4px 10px rgba(0,0,0,0.3)}
+  #lookArea{position:fixed;top:0;right:0;width:55%;height:75%;z-index:5}
+  #actions{position:fixed;bottom:90px;right:18px;display:flex;flex-direction:column;gap:12px;z-index:10}
+ .btn{width:62px;height:62px;background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 6px 16px rgba(0,0,0,0.25)}
 </style>
-<script type="importmap">
-{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
-</script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
 </head>
 <body>
-<div id="title">AESTHETICRAFT</div>
+<div id="topBar">
+  <select id="worldType" class="pill">
+    <option value="flat">🌿 FLAT WORLD - for building</option>
+    <option value="hills" selected>⛰️ BEAUTIFUL HILLS</option>
+    <option value="irregular">🌋 IRREGULAR / Extreme</option>
+    <option value="islands">☁️ FLOATING ISLANDS</option>
+  </select>
+  <button id="regen" class="pill">🔄 REGENERATE</button>
+</div>
 <div id="crosshair"></div>
 <div id="lookArea"></div>
 <div id="hud"></div>
-<div id="controls">
-  <div class="joystick" id="joy"><div class="knob" id="knob"></div></div>
-</div>
+<div class="joystick" id="joy"><div class="knob" id="knob"></div></div>
 <div id="actions">
-  <div class="btn" id="jump">↑</div>
+  <div class="btn" id="jumpBtn">⬆️</div>
   <div class="btn" id="breakBtn">⛏️</div>
   <div class="btn" id="placeBtn">🧱</div>
 </div>
@@ -42,167 +46,184 @@
 import * as THREE from 'three';
 
 const BLOCKS = {
-  grass: { color: 0x8BC34A, name: 'GRASS' },
-  dirt: { color: 0x795548, name: 'DIRT' },
-  stone: { color: 0x9E9E9E, name: 'STONE' },
-  wood: { color: 0x6D4C41, name: 'WOOD' },
-  leaves: { color: 0x66BB6A, name: 'LEAF' },
-  glass: { color: 0xB3E5FC, transparent: true, opacity: 0.4, name: 'GLASS' },
-  sand: { color: 0xFFE082, name: 'SAND' },
-  brick: { color: 0xD2691E, name: 'BRICK' },
-  plank: { color: 0xDEB887, name: 'PLANK' }
+  grass:{color:0x8BC34A,name:'GRASS'}, dirt:{color:0x795548,name:'DIRT'},
+  stone:{color:0x9E9E9E,name:'STONE'}, wood:{color:0x6D4C41,name:'WOOD'},
+  leaves:{color:0x4CAF50,name:'LEAVES'}, glass:{color:0xB3E5FC,transparent:true,opacity:0.3,name:'GLASS'},
+  sand:{color:0xFFE082,name:'SAND'}, brick:{color:0xE57373,name:'BRICK'}, plank:{color:0xD7CCC8,name:'PLANK'}
 };
-const blockKeys = Object.keys(BLOCKS);
+const keys = Object.keys(BLOCKS);
 let selected = 0;
 
 const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0xCCE8FF, 40, 120);
+scene.fog = new THREE.Fog(0xCCE8FF, 50, 140);
 scene.background = new THREE.Color(0xCCE8FF);
-
-const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(innerWidth, innerHeight);
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const camera = new THREE.PerspectiveCamera(70, innerWidth/innerHeight, 0.1, 500);
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth,innerHeight); renderer.shadowMap.enabled=true;
 document.body.appendChild(renderer.domElement);
 
-// Lights for beautiful aesthetic
-const sun = new THREE.DirectionalLight(0xFFF8E1, 1.2);
-sun.position.set(50, 80, 30); sun.castShadow = true;
-sun.shadow.mapSize.set(1024,1024);
-scene.add(sun);
-scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-const hemi = new THREE.HemisphereLight(0xCCE8FF, 0x8BC34A, 0.5);
-scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xffffff,1); sun.position.set(50,100,20); sun.castShadow=true;
+scene.add(sun); scene.add(new THREE.AmbientLight(0xffffff,0.65));
 
-// World data
-const world = new Map(); // key: "x,y,z" -> block type
-const getKey = (x,y,z) => `${x},${y},${z}`;
-const meshes = new Map();
+const world = new Map(); const meshes = new Map();
+const getKey = (x,y,z)=>`${x},${y},${z}`;
+const isSolid = (x,y,z)=> world.has(getKey(Math.floor(x),Math.floor(y),Math.floor(z)));
 
-function createBlockMesh(type){
-  const mat = BLOCKS[type];
-  const geo = new THREE.BoxGeometry(1,1,1);
-  const material = new THREE.MeshLambertMaterial({
-    color: mat.color,
-    transparent: mat.transparent||false,
-    opacity: mat.opacity||1
-  });
-  const mesh = new THREE.Mesh(geo, material);
-  mesh.castShadow = true; mesh.receiveShadow = true;
-  return mesh;
+function makeMesh(type){
+  const b=BLOCKS[type];
+  const m=new THREE.Mesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshLambertMaterial({color:b.color,transparent:b.transparent||false,opacity:b.opacity||1}));
+  m.castShadow=true; m.receiveShadow=true; return m;
 }
-
 function addBlock(x,y,z,type){
-  const k = getKey(x,y,z);
-  if(world.has(k)) return;
-  world.set(k, type);
-  const mesh = createBlockMesh(type);
-  mesh.position.set(x,y,z);
-  scene.add(mesh);
-  meshes.set(k, mesh);
+  x=Math.floor(x); y=Math.floor(y); z=Math.floor(z);
+  const k=getKey(x,y,z); if(world.has(k)) return;
+  world.set(k,type); const mesh=makeMesh(type); mesh.position.set(x+0.5,y+0.5,z+0.5); scene.add(mesh); meshes.set(k,mesh);
 }
 function removeBlock(x,y,z){
-  const k = getKey(x,y,z);
-  if(!world.has(k)) return;
-  scene.remove(meshes.get(k));
-  meshes.delete(k); world.delete(k);
+  x=Math.floor(x); y=Math.floor(y); z=Math.floor(z);
+  const k=getKey(x,y,z); if(!world.has(k)) return;
+  scene.remove(meshes.get(k)); meshes.delete(k); world.delete(k);
 }
+function clearWorld(){ meshes.forEach(m=>scene.remove(m)); meshes.clear(); world.clear(); }
 
-// Beautiful terrain generation
-function noise(x,z){ return Math.sin(x*0.1)*3 + Math.cos(z*0.1)*3 + Math.sin(x*0.05+z*0.05)*2; }
-for(let x=-20; x<20; x++){
-  for(let z=-20; z<20; z++){
-    const h = Math.floor(noise(x,z));
-    for(let y=-5; y<=h; y++){
-      let t = 'dirt';
-      if(y===h) t='grass';
-      if(y<h-2) t='stone';
-      if(y<0) t='sand';
-      addBlock(x,y,z,t);
-    }
-    // aesthetic trees
-    if(Math.random()>0.92 && h>-1){
-      for(let ty=1; ty<=4; ty++) addBlock(x,h+ty,z,'wood');
-      for(let lx=-2; lx<=2; lx++) for(let lz=-2; lz<=2; lz++) for(let ly=0; ly<=2; ly++){
-        if(Math.abs(lx)==2 && Math.abs(lz)==2) continue;
-        addBlock(x+lx, h+4+ly, z+lz, 'leaves');
+// WORLD GENERATORS
+function genWorld(type){
+  clearWorld();
+  for(let x=-25;x<25;x++){
+    for(let z=-25;z<25;z++){
+      let h=0;
+      if(type==='flat') h=0;
+      if(type==='hills') h=Math.floor(Math.sin(x*0.15)*2 + Math.cos(z*0.15)*2 + Math.sin(x*0.05+z*0.05)*2);
+      if(type==='irregular') h=Math.floor(Math.sin(x*0.3)*4 + Math.cos(z*0.4)*5 + Math.sin(x*z*0.05)*6);
+      if(type==='islands') h=Math.floor(Math.random()*8)+5; // islands handled below
+
+      if(type!=='islands'){
+        for(let y=-4;y<=h;y++){
+          let t='dirt'; if(y===h) t='grass'; if(y<h-2) t='stone'; if(y<-1) t='sand';
+          addBlock(x,y,z,t);
+        }
+        if(type!=='flat' && Math.random()>0.93 && h>-1){
+          for(let ty=1;ty<=4;ty++) addBlock(x,h+ty,z,'wood');
+          for(let lx=-1;lx<=1;lx++) for(let lz=-1;lz<=1;lz++) addBlock(x+lx,h+5,z+lz,'leaves');
+          addBlock(x,h+6,z,'leaves');
+        }
+      } else {
+        if(Math.random()>0.7){
+          const islandY = h; const size=2+Math.floor(Math.random()*2);
+          for(let ix=-size;ix<=size;ix++) for(let iz=-size;iz<=size;iz++) for(let iy=0;iy<2;iy++){
+            if(Math.abs(ix)+Math.abs(iz) <= size+1) addBlock(x+ix,islandY+iy,z+iz,'grass');
+          }
+        }
       }
     }
   }
+  if(type==='flat'){ player.x=0; player.y=5; player.z=0; }
+  else { player.x=0; player.y=15; player.z=0; }
+  player.vy=0;
 }
 
-// Player
-let player = { x:0, y:10, z:0, vy:0 };
-camera.position.set(0,10,0);
-let yaw=0, pitch=0;
+// PLAYER PHYSICS - THIS FIXES FALLING
+let player={x:0,y:10,z:0, vy:0, onGround:false, height:1.7, width:0.6};
+function checkCollision(nx,ny,nz){
+  const w=player.width;
+  const points = [
+    [nx-w, ny, nz-w], [nx+w, ny, nz-w], [nx-w, ny, nz+w], [nx+w, ny, nz+w],
+    [nx-w, ny+1, nz-w], [nx+w, ny+1, nz-w], [nx-w, ny+1, nz+w], [nx+w, ny+1, nz+w],
+    [nx, ny+0.5, nz]
+  ];
+  for(const p of points) if(isSolid(p[0],p[1],p[2])) return true;
+  return false;
+}
 
-// Touch look
+let yaw=0,pitch=0;
 let lookStart=null;
-document.getElementById('lookArea').addEventListener('touchstart', e=>{ lookStart={x:e.touches[0].clientX, y:e.touches[0].clientY} });
-document.getElementById('lookArea').addEventListener('touchmove', e=>{
+document.getElementById('lookArea').addEventListener('touchstart',e=>{lookStart={x:e.touches[0].clientX,y:e.touches[0].clientY}});
+document.getElementById('lookArea').addEventListener('touchmove',e=>{
   if(!lookStart) return;
-  const dx = e.touches[0].clientX - lookStart.x;
-  const dy = e.touches[0].clientY - lookStart.y;
-  yaw -= dx*0.005; pitch -= dy*0.005;
-  pitch = Math.max(-1.4, Math.min(1.4, pitch));
-  lookStart={x:e.touches[0].clientX, y:e.touches[0].clientY};
+  yaw -= (e.touches[0].clientX-lookStart.x)*0.005;
+  pitch -= (e.touches[0].clientY-lookStart.y)*0.005;
+  pitch=Math.max(-1.5,Math.min(1.5,pitch));
+  lookStart={x:e.touches[0].clientX,y:e.touches[0].clientY};
 });
 
-// Joystick move
 let move={x:0,y:0};
 const joy=document.getElementById('joy'), knob=document.getElementById('knob');
-joy.addEventListener('touchmove', e=>{
-  const r=joy.getBoundingClientRect();
-  const cx=r.left+r.width/2, cy=r.top+r.height/2;
+joy.addEventListener('touchmove',e=>{
+  const r=joy.getBoundingClientRect(); const cx=r.left+55, cy=r.top+55;
   let dx=e.touches[0].clientX-cx, dy=e.touches[0].clientY-cy;
-  const dist=Math.min(40, Math.hypot(dx,dy)); const ang=Math.atan2(dy,dx);
-  dx=Math.cos(ang)*dist; dy=Math.sin(ang)*dist;
+  const d=Math.min(40,Math.hypot(dx,dy)); const a=Math.atan2(dy,dx);
+  dx=Math.cos(a)*d; dy=Math.sin(a)*d;
   knob.style.left=30+dx+'px'; knob.style.top=30+dy+'px';
   move.x=dx/40; move.y=dy/40;
 });
-joy.addEventListener('touchend', ()=>{ knob.style.left='30px'; knob.style.top='30px'; move={x:0,y:0} });
+const resetJoy=()=>{knob.style.left='30px';knob.style.top='30px';move={x:0,y:0}};
+joy.addEventListener('touchend',resetJoy); joy.addEventListener('touchcancel',resetJoy);
 
-// Raycast for build/break
-const raycaster = new THREE.Raycaster();
+// Build / Break
+const ray=new THREE.Raycaster();
 function getTarget(){
-  raycaster.setFromCamera(new THREE.Vector2(0,0), camera);
-  const intersects = raycaster.intersectObjects([...meshes.values()]);
-  if(intersects.length>0 && intersects[0].distance<8) return intersects[0];
-  return null;
+  ray.setFromCamera({x:0,y:0},camera);
+  const hits=ray.intersectObjects([...meshes.values()]);
+  return (hits[0] && hits[0].distance<7)? hits[0] : null;
 }
-function doBreak(){ const t=getTarget(); if(t){ const p=t.object.position; removeBlock(p.x,p.y,p.z); } }
-function doPlace(){ const t=getTarget(); if(t){ const n=t.face.normal; const p=t.object.position; addBlock(Math.round(p.x+n.x), Math.round(p.y+n.y), Math.round(p.z+n.z), blockKeys[selected]); } }
+document.getElementById('breakBtn').onclick=()=>{
+  const t=getTarget(); if(t) removeBlock(t.object.position.x-0.5,t.object.position.y-0.5,t.object.position.z-0.5);
+};
+document.getElementById('placeBtn').onclick=()=>{
+  const t=getTarget(); if(t){ const p=t.object.position.clone().add(t.face.normal); addBlock(p.x-0.5,p.y-0.5,p.z-0.5,keys[selected]); }
+};
+document.getElementById('jumpBtn').onclick=()=>{ if(player.onGround){ player.vy=0.22; player.onGround=false; } };
 
-document.getElementById('breakBtn').addEventListener('click', doBreak);
-document.getElementById('placeBtn').addEventListener('click', doPlace);
-document.getElementById('jump').addEventListener('click', ()=>{ if(player.y<11) player.vy=0.18; });
-
-// Inventory UI
+// HUD
 const hud=document.getElementById('hud');
-blockKeys.forEach((k,i)=>{
-  const s=document.createElement('div'); s.className='slot'+(i==0?' active':'');
-  s.style.background='#'+BLOCKS[k].color.toString(16).padStart(6,'0');
-  s.innerText=BLOCKS[k].name; s.onclick=()=>{selected=i; document.querySelectorAll('.slot').forEach(el=>el.classList.remove('active')); s.classList.add('active');};
-  hud.appendChild(s);
+keys.forEach((k,i)=>{
+  const d=document.createElement('div'); d.className='slot'+(i===0?' active':'');
+  d.style.background='#'+BLOCKS[k].color.toString(16).padStart(6,'0'); d.innerText=BLOCKS[k].name;
+  d.onclick=()=>{selected=i; document.querySelectorAll('.slot').forEach(s=>s.classList.remove('active')); d.classList.add('active');};
+  hud.appendChild(d);
 });
 
-// Loop
+// World type switch
+document.getElementById('worldType').onchange=(e)=>genWorld(e.target.value);
+document.getElementById('regen').onclick=()=>genWorld(document.getElementById('worldType').value);
+
+genWorld('hills');
+
+function updatePhysics(){
+  player.vy -= 0.012; // gravity
+  let newY = player.y + player.vy;
+
+  // Vertical collision
+  if(player.vy < 0){
+    if(checkCollision(player.x, newY-0.1, player.z)){
+      newY = Math.floor(newY)+1.7; // snap to top of block
+      player.vy=0; player.onGround=true;
+    } else player.onGround=false;
+  } else {
+    if(checkCollision(player.x, newY+player.height, player.z)) { newY = player.y; player.vy=0; }
+  }
+  player.y=newY;
+
+  // Horizontal collision
+  const speed=0.15;
+  const fwd=new THREE.Vector3(Math.sin(yaw),0,Math.cos(yaw)).multiplyScalar(-move.y*speed);
+  const right=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw)).multiplyScalar(move.x*speed);
+  let nx=player.x+fwd.x+right.x, nz=player.z+fwd.z+right.z;
+  if(!checkCollision(nx, player.y, player.z)) player.x=nx;
+  if(!checkCollision(player.x, player.y, nz)) player.z=nz;
+
+  if(player.y<-20){ player.y=15; player.vy=0; } // safety respawn
+}
+
 function animate(){
   requestAnimationFrame(animate);
-  // movement
-  const forward = new THREE.Vector3(Math.sin(yaw),0,Math.cos(yaw)).multiplyScalar(-move.y*0.2);
-  const right = new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw)).multiplyScalar(move.x*0.2);
-  player.x+=forward.x+right.x; player.z+=forward.z+right.z;
-  player.vy-=0.01; player.y+=player.vy;
-  if(player.y<2){ player.y=10; player.vy=0; } // simple ground
+  updatePhysics();
   camera.position.set(player.x, player.y+1.6, player.z);
-  camera.rotation.order='YXZ';
-  camera.rotation.y=yaw; camera.rotation.x=pitch;
+  camera.rotation.order='YXZ'; camera.rotation.y=yaw; camera.rotation.x=pitch;
   renderer.render(scene,camera);
 }
 animate();
-window.addEventListener('resize', ()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
 </script>
 </body>
-  </html>
+</html>
